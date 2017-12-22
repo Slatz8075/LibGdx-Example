@@ -8,9 +8,12 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 /**
  * This is a screen. 
@@ -29,6 +32,17 @@ public class MainGame implements Screen{
     // our hero needs a place to be in
     private World world;
     
+    
+    // sprite batch
+    private SpriteBatch batch;
+    // camera and viewport
+    private OrthographicCamera camera;
+    private Viewport view;
+    
+    // game units
+    private final int HEIGHT = 600;
+    private final int WIDTH = 800;
+    
     // the constructor for our maingame needs to know what made it
     // this is what the game variable is
     public MainGame(PlatformGame game){
@@ -38,6 +52,18 @@ public class MainGame implements Screen{
         p1 = new Player(100,100);
         // generate the world
         world = new World();
+        // initialize the spritebatch
+        this.batch = game.getBatch();
+        
+        // set up the camera and view
+        this.camera = new OrthographicCamera(WIDTH, HEIGHT);
+        this.view = new FitViewport(WIDTH, HEIGHT, camera);
+        view.apply();
+        // move the camera to the center
+        this.camera.position.set(WIDTH/2, HEIGHT/2, 0);
+        // make sure to apply the changes
+        this.camera.update();
+        
     }
     
     @Override
@@ -57,9 +83,7 @@ public class MainGame implements Screen{
             p1.fixCollision(block);
         }
         
-        // get the SpriteBatch from the manager
-        SpriteBatch batch = gameManager.getBatch();
-        
+       
         // clears the screen in a black colour
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -67,8 +91,13 @@ public class MainGame implements Screen{
         // ask the world to render
         // notice this is not in the SpriteBatch
         // This is because it uses its own ShapeRenderer
-        world.render();
+        world.render(camera);
         
+        if(p1.getX() > 200){
+            camera.position.x = p1.getX();
+        }
+        camera.update();
+        batch.setProjectionMatrix(camera.combined);
         // ask the SpriteBatch to start taking notes of what to draw
         batch.begin();
 	// ask the player to draw themself

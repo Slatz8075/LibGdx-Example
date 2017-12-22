@@ -91,7 +91,16 @@ public class Player {
         // it has the width and height of the standing picture
         this.bounds = new Rectangle(x, y, stand.getRegionWidth(), stand.getRegionHeight());
     }
-
+    
+    public float getX(){
+        return x;
+    }
+    
+    public float getY(){
+        return y;
+    }
+    
+    
     public void update(float deltaTime) {
         // if I'm pressing right
         if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {

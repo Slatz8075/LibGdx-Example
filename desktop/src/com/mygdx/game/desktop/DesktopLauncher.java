@@ -19,6 +19,8 @@ public class DesktopLauncher {
         
         // used to start the desktop version of the game
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.width = 800;
+        config.height = 600;
         new LwjglApplication(new PlatformGame(), config);
     }
 }
